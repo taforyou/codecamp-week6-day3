@@ -32,6 +32,31 @@ export class Todo extends Component {
     this.setState({ listItem })
   }
 
+  async fetchPost (text) {
+    const result = await fetch('http://5a7134edce7c440012e89ec8.mockapi.io/todo', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: text
+      }),
+    })
+
+    if (result.ok) {
+      // ท่านี้ก็ได้ดูดีกว่า 1
+      let data = await result.json()
+      let listItem = this.state.listItem.concat(data.contents);
+      this.setState({ listItem })
+
+      // ท่านี้ก็ได้ดูดีกว่า 2
+      //this.fetchGet();
+
+    }
+    
+  }
+
   deleteListAtIndex = (index) => {
     // ไม่ควรทำเพราะเป็นการ Render ใหม่ทั้ง State ถ้ามีเยอะก็ฉิบหายยย สิครับ
     // this.state.listItem.splice(index, 1);
@@ -43,11 +68,12 @@ export class Todo extends Component {
   }
 
   submitList = () => {
+    this.fetchPost(this.state.inputText);
     this.setState({
-      listItem: this.state.listItem.concat([this.state.inputText]),
+      //listItem: this.state.listItem.concat([this.state.inputText]),
       inputText: ''
     })
-    console.log(this.state.listItem);
+    //console.log(this.state.listItem);
   }
 
   handleKeyPress = (event) => {
