@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Layout, Form, Input, Icon, Row, Col, Button, Card, List} from 'antd';
+import { Input, Icon, Button, Card, List} from 'antd';
 
 export class Todo extends Component {
 
@@ -22,9 +22,14 @@ export class Todo extends Component {
   }
 
   async fetchGet () {
-    const result = await fetch('YOUR API ADDRESS HERE')
-    let tests = await result.json();
-    console.log(tests)
+    const result = await fetch('http://5a7134edce7c440012e89ec8.mockapi.io/todo')
+    let data = await result.json();
+    console.log(data)
+    let listItem = data.map((value, index) => {
+      return value.contents
+    });
+
+    this.setState({ listItem })
   }
 
   deleteListAtIndex = (index) => {
@@ -42,6 +47,7 @@ export class Todo extends Component {
       listItem: this.state.listItem.concat([this.state.inputText]),
       inputText: ''
     })
+    console.log(this.state.listItem);
   }
 
   handleKeyPress = (event) => {
@@ -62,9 +68,9 @@ export class Todo extends Component {
     //     'text 3',
     // ];
 
-    const { Header, Footer, Sider, Content } = Layout;
-    const Search = Input.Search;
-    const FormItem = Form.Item;
+    //const { Header, Footer, Sider, Content } = Layout;
+    //const Search = Input.Search;
+    //const FormItem = Form.Item;
 
     return (
         <Card style={{ width: 500 , backgroundColor : this.props.myColor }}>
