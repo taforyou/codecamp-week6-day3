@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Input, Icon, Button, Card, List} from 'antd';
+import { Input, Icon, Button, Card, List ,Spin} from 'antd';
 
 export class Todo extends Component {
 
@@ -9,7 +9,8 @@ export class Todo extends Component {
 
     this.state = {
       inputText : '',
-      listItem: []
+      listItem: [],
+      isLoading: true
     }
 
     this.handleChangeText = this.handleChangeText.bind(this);
@@ -29,10 +30,11 @@ export class Todo extends Component {
       return value.contents
     });
 
-    this.setState({ listItem })
+    this.setState({ listItem , isLoading : false})
   }
 
   async fetchPost (text) {
+    this.setState({isLoading : true});
     const result = await fetch('http://5a7134edce7c440012e89ec8.mockapi.io/todo', {
       method: 'POST',
       headers: {
@@ -48,7 +50,7 @@ export class Todo extends Component {
       // ท่านี้ก็ได้ดูดีกว่า 1
       let data = await result.json()
       let listItem = this.state.listItem.concat(data.contents);
-      this.setState({ listItem })
+      this.setState({ listItem , isLoading : false })
 
       // ท่านี้ก็ได้ดูดีกว่า 2
       //this.fetchGet();
@@ -98,36 +100,35 @@ export class Todo extends Component {
     //const Search = Input.Search;
     //const FormItem = Form.Item;
 
+    // หลัง Return มันต้องมี DIV ครอบก่อน
+    // { if 1==1 ? 'TRUE' : 'FALSE'}
     return (
-        <Card style={{ width: 500 , backgroundColor : this.props.myColor }}>
-            <h1>To-do-list</h1>
+        <div>
+          { 
+            this.state.isLoading == false ? <Card style={{ width: 500 , backgroundColor : this.props.myColor }}>
+              <h1>To-do-list</h1>
 
-            <div style={{ marginBottom:'10px'}}>
-              <Input
-                addonAfter={<Button type="primary" onClick={this.submitList}>Add</Button>}
-                onChange={this.handleChangeText}
-                value={this.state.inputText}
-                onKeyPress={this.handleKeyPress}/>
-            </div>
+              <div style={{ marginBottom:'10px'}}>
+                <Input
+                  addonAfter={<Button type="primary" onClick={this.submitList}>Add</Button>}
+                  onChange={this.handleChangeText}
+                  value={this.state.inputText}
+                  onKeyPress={this.handleKeyPress}/>
+              </div>
 
-            <List
-              bordered
-              dataSource={this.state.listItem}
-              renderItem={(item,index) => (
-                <List.Item actions={[<a onClick={() => this.deleteListAtIndex(index)}><Icon type="close-circle" style={{ fontSize: 16, color: 'rgb(255, 145, 0)' }} /></a>]}>
-                    {item}
-                </List.Item>
-            )}
-            />
-            {/*
-              this.state.listItem.map((value, index) => {
-                //console.log(index);
-                return (
-                  <h3 key={index + value}>{value}</h3>
-                );
-              })
-            */}
-        </Card>
+              <List
+                bordered
+                dataSource={this.state.listItem}
+                renderItem={(item,index) => (
+                  <List.Item actions={[<a onClick={() => this.deleteListAtIndex(index)}><Icon type="close-circle" style={{ fontSize: 16, color: 'rgb(255, 145, 0)' }} /></a>]}>
+                      {item}
+                  </List.Item>
+              )}
+              />
+          </Card>:<Spin />
+        }
+          
+        </div>
       );
     }
 }
