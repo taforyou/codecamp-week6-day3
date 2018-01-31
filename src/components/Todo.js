@@ -16,6 +16,17 @@ export class Todo extends Component {
 
   }
 
+  componentDidMount () {
+    // เราควรจะ fetch เพื่อเอาค่ามาจาก MockAPI 
+    this.fetchGet();
+  }
+
+  async fetchGet () {
+    const result = await fetch('YOUR API ADDRESS HERE')
+    let tests = await result.json();
+    console.log(tests)
+  }
+
   deleteListAtIndex = (index) => {
     // ไม่ควรทำเพราะเป็นการ Render ใหม่ทั้ง State ถ้ามีเยอะก็ฉิบหายยย สิครับ
     // this.state.listItem.splice(index, 1);
